@@ -1,10 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 NULLABLE = {"blank": True, "null": True}
 
 
-class User(models.Model):
+class User(AbstractUser):
     username = None
     email = models.EmailField(
         unique=True, verbose_name="Почта", help_text="Укажите почту"
@@ -19,9 +20,8 @@ class User(models.Model):
         help_text="Загрузите аватар"
     )
 
-
-USERNAME_FIELD = "email"
-REQUIRED_FIELDS = []
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
 
 def __str__(self):
