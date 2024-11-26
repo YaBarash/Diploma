@@ -1,10 +1,10 @@
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 
-from book.models import Book
+from book.models import Book, Author
 from book.paginators import Pagination
 from book.permissions import IsUserModerator
-from book.serializers import BookSerializer
+from book.serializers import BookSerializer, AuthorSerializer
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -16,5 +16,18 @@ class BookViewSet(viewsets.ModelViewSet):
         if self.action in ["update", "retrieve", "create", "destroy"]:
             self.permission_classes = (IsUserModerator,)
         elif self.action == "list":
-            self.permission_classes = (AllowAny,)
+            self.permission_classes = (IsAuthenticatedOrReadOnly,)
+        return super().get_permissions()
+
+
+class AuthorViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    pagination_class = Pagination
+
+    def get_permissions(self):
+        if self.action in ["update", "retrieve", "create", "destroy"]:
+            self.permission_classes = (IsUserModerator,)
+        elif self.action == "list":
+            self.permission_classes = (IsAuthenticatedOrReadOnly,)
         return super().get_permissions()
