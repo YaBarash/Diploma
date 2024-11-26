@@ -19,6 +19,9 @@ class BookViewSet(viewsets.ModelViewSet):
             self.permission_classes = (IsAuthenticatedOrReadOnly,)
         return super().get_permissions()
 
+    def list(self):
+        queryset = Book.objects.filter()
+
 
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all()

@@ -20,6 +20,17 @@ class Author(models.Model):
         verbose_name_plural = "авторы"
 
 
+class Genre(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Название жанра", help_text="Укажите название жанра")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "жанр"
+        verbose_name_plural = "жанры"
+
+
 class Book(models.Model):
     title = models.CharField(
         max_length=100,
@@ -33,6 +44,7 @@ class Book(models.Model):
         verbose_name="описание",
         help_text="введите описание",
     )
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name='жанр', help_text='укажите жанр книги', )
     authors = models.ManyToManyField(
         Author, verbose_name="автор", help_text="укажите автора"
     )
@@ -51,8 +63,8 @@ class Book(models.Model):
 
     def __str__(self):
         return (
-            ",".join(self.authors.values_list("full_name", flat=True))
-            + f": {self.title}"
+                ",".join(self.authors.values_list("full_name", flat=True))
+                + f": {self.title}"
         )
 
     class Meta:
