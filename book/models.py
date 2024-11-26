@@ -6,14 +6,18 @@ NULLABLE = {"blank": True, "null": True}
 
 
 class Author(models.Model):
-    full_name = models.CharField(max_length=50, verbose_name='полное имя автора', help_text='введите имя автора', )
+    full_name = models.CharField(
+        max_length=50,
+        verbose_name="полное имя автора",
+        help_text="введите имя автора",
+    )
 
     def __str__(self):
         return self.full_name
 
     class Meta:
-        verbose_name = 'автор'
-        verbose_name_plural = 'авторы'
+        verbose_name = "автор"
+        verbose_name_plural = "авторы"
 
 
 class Book(models.Model):
@@ -29,11 +33,14 @@ class Book(models.Model):
         verbose_name="описание",
         help_text="введите описание",
     )
-    authors = models.ManyToManyField(Author, verbose_name='автор',
-                                     help_text='укажите автора')
-    count = models.PositiveIntegerField(verbose_name="количество книг в наличии",
-                                        help_text="укажите количество книг в наличии", default=0,
-                                        )
+    authors = models.ManyToManyField(
+        Author, verbose_name="автор", help_text="укажите автора"
+    )
+    count = models.PositiveIntegerField(
+        verbose_name="количество книг в наличии",
+        help_text="укажите количество книг в наличии",
+        default=0,
+    )
     owner = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -43,9 +50,11 @@ class Book(models.Model):
     )
 
     def __str__(self):
-        return ','.join(self.authors.values_list("full_name", flat=True)) + f": {self.title}"
+        return (
+            ",".join(self.authors.values_list("full_name", flat=True))
+            + f": {self.title}"
+        )
 
     class Meta:
         verbose_name = "книга"
         verbose_name_plural = "книги"
-

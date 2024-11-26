@@ -12,4 +12,3 @@ urlpatterns = [
     # path('list_books/', BookViewSet.as_view({'get': 'list_books'}), name='list_books'),
     # path('list_books/', BookViewSet.as_view({'get': 'list_books'}), name='list_books'),
 ] + router.urls
-

@@ -5,4 +5,7 @@ from book.models import Book
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ("title", "authors", )
+        fields = (
+            "title",
+            "authors",
+        )
