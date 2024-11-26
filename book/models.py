@@ -43,8 +43,6 @@ class Book(models.Model):
     )
 
     def __str__(self):
-        # print(type(self.authors))
-        # print(dir(self.authors))
         return ','.join(self.authors.values_list("full_name", flat=True)) + f": {self.title}"
 
     class Meta:

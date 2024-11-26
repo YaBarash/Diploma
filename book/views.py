@@ -18,17 +18,3 @@ class BookViewSet(viewsets.ModelViewSet):
         elif self.action == "list":
             self.permission_classes = (AllowAny,)
         return super().get_permissions()
-
-    # def update(self, request):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance, data=request.data)
-    #     self.perform_update(serializer)
-    #     return Response(serializer.data)
-    #
-    # def retrieve(self, request, *args, **kwargs):
-    #     instance = self.get_object()
-    #     serializer = self.get_serializer(instance)
-    #     return Response(serializer.data)
-
-    def perform_destroy(self, instance):
-        instance.delete()
