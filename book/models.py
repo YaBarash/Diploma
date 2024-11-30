@@ -10,6 +10,7 @@ class Author(models.Model):
         max_length=50,
         verbose_name="полное имя автора",
         help_text="введите имя автора",
+        unique=True,
     )
 
     def __str__(self):
@@ -21,7 +22,12 @@ class Author(models.Model):
 
 
 class Genre(models.Model):
-    title = models.CharField(max_length=50, verbose_name="Название жанра", help_text="Укажите название жанра")
+    title = models.CharField(
+        max_length=50,
+        verbose_name="Название жанра",
+        help_text="Укажите название жанра",
+        unique=True,
+    )
 
     def __str__(self):
         return self.title
@@ -44,7 +50,13 @@ class Book(models.Model):
         verbose_name="описание",
         help_text="введите описание",
     )
-    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, verbose_name='жанр', help_text='укажите жанр книги', )
+    genre = models.ForeignKey(
+        Genre,
+        null=True,
+        on_delete=models.CASCADE,
+        verbose_name="жанр",
+        help_text="укажите жанр книги",
+    )
     authors = models.ManyToManyField(
         Author, verbose_name="автор", help_text="укажите автора"
     )
@@ -63,8 +75,8 @@ class Book(models.Model):
 
     def __str__(self):
         return (
-                ",".join(self.authors.values_list("full_name", flat=True))
-                + f": {self.title}"
+            ",".join(self.authors.values_list("full_name", flat=True))
+            + f": {self.title}"
         )
 
     class Meta:
