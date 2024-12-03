@@ -7,6 +7,8 @@ NULLABLE = {"blank": True, "null": True}
 
 class User(AbstractUser):
     username = None
+    first_name = models.CharField(max_length=150, verbose_name="Имя", help_text="Введите имя")
+    last_name = models.CharField(max_length=150, verbose_name="Фамилия", help_text="Введите фамилию")
     email = models.EmailField(
         unique=True, verbose_name="Почта", help_text="Укажите почту"
     )
@@ -25,7 +27,7 @@ class User(AbstractUser):
 
 
 def __str__(self):
-    return self.email
+    return f"{self.first_name} {self.last_name} - {self.email}"
 
 
 class Meta:

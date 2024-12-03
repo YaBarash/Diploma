@@ -60,25 +60,60 @@ class Book(models.Model):
     authors = models.ManyToManyField(
         Author, verbose_name="автор", help_text="укажите автора"
     )
-    count = models.PositiveIntegerField(
-        verbose_name="количество книг в наличии",
-        help_text="укажите количество книг в наличии",
-        default=0,
-    )
     owner = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name="владелец",
-        help_text="укажите собственника",
+        verbose_name="Владелец",
+        help_text="укажите библиотекаря",
     )
+
+    @property
+    # """обращение как к свойству"""
+    def count_item(self):
+        return self.bookitem_set.count()
 
     def __str__(self):
         return (
-            ",".join(self.authors.values_list("full_name", flat=True))
-            + f": {self.title}"
+                ",".join(self.authors.values_list("full_name", flat=True))
+                + f": {self.title}"
         )
 
     class Meta:
         verbose_name = "книга"
         verbose_name_plural = "книги"
+
+
+class BookItem(models.Model):
+    number = models.PositiveIntegerField(
+        primary_key=True,
+        verbose_name="Инвентарный номер",
+        help_text="Введите инвентарный номер",
+    )
+    book_details = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        verbose_name="Название книги",
+        help_text="Введите название книги",
+    )
+    keeper = models.ForeignKey(
+        User,
+        default=None,
+        on_delete=models.CASCADE,
+        verbose_name="держатель",
+        help_text="Выберите держателя",
+        **NULLABLE,
+    )
+
+    status = models.models.CharField(
+        max_length=20,
+        choices=[('is_ready', 'в наличии'), ('get', 'выдана'), ('lost', 'утеряна')],
+        verbose_name='Статус доставки',
+        help_text='Статус отправки напоминания')
+
+    def __str__(self):
+        return f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, держатель {self.keeper}"
+
+    class Meta:
+        verbose_name = "Экземпляр книги"
+        verbose_name_plural = "Экземпляры книги"

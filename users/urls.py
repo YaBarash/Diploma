@@ -3,7 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users.apps import UsersConfig
-from users.views import UserCreateAPIView, UserRetrieveAPIView
+from users.views import UserCreateAPIView, UserRetrieveAPIView, UserListAPIView
 
 app_name = UsersConfig.name
 
@@ -19,5 +19,6 @@ urlpatterns = [
         TokenRefreshView.as_view(permission_classes=(AllowAny,)),
         name="token_refresh",
     ),
-    path("whoami/", UserRetrieveAPIView.as_view(), name="whoami"),
+    path("list/", UserListAPIView.as_view(), name="users_list"),
+    path("retrieve/", UserRetrieveAPIView.as_view(), name="user_retrieve"),
 ]

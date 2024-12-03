@@ -1,5 +1,5 @@
 from django.contrib import admin
-from book.models import Book, Author, Genre
+from book.models import Book, Author, Genre, BookItem
 
 
 @admin.register(Book)
@@ -10,7 +10,7 @@ class BookAdmin(admin.ModelAdmin):
         "authors",
         "genre",
     )
-    # search_fields = ('title', 'author__authors', 'genre__genre',)
+
 
 
 @admin.register(Author)
@@ -27,3 +27,7 @@ class GenreAdmin(admin.ModelAdmin):
         "id",
         "title",
     )
+
+@admin.register(BookItem)
+class BookItemAdmin(admin.ModelAdmin):
+    list_display = ("number", "book_details", "keeper", )
