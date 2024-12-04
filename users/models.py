@@ -7,8 +7,12 @@ NULLABLE = {"blank": True, "null": True}
 
 class User(AbstractUser):
     username = None
-    first_name = models.CharField(max_length=150, verbose_name="Имя", help_text="Введите имя")
-    last_name = models.CharField(max_length=150, verbose_name="Фамилия", help_text="Введите фамилию")
+    first_name = models.CharField(
+        max_length=150, verbose_name="Имя", help_text="Введите имя"
+    )
+    last_name = models.CharField(
+        max_length=150, verbose_name="Фамилия", help_text="Введите фамилию"
+    )
     email = models.EmailField(
         unique=True, verbose_name="Почта", help_text="Укажите почту"
     )
@@ -19,7 +23,7 @@ class User(AbstractUser):
         upload_to="users/avatar/",
         **NULLABLE,
         verbose_name="Аватар",
-        help_text="Загрузите аватар"
+        help_text="Загрузите аватар",
     )
 
     USERNAME_FIELD = "email"

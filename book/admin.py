@@ -12,7 +12,6 @@ class BookAdmin(admin.ModelAdmin):
     )
 
 
-
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
     list_display = (
@@ -28,6 +27,11 @@ class GenreAdmin(admin.ModelAdmin):
         "title",
     )
 
+
 @admin.register(BookItem)
 class BookItemAdmin(admin.ModelAdmin):
-    list_display = ("number", "book_details", "keeper", )
+    list_display = (
+        "number",
+        "book_details",
+        "keeper",
+    )

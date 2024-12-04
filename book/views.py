@@ -1,4 +1,3 @@
-from django.contrib.sites import requests
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets, status
 from rest_framework import filters
@@ -8,7 +7,12 @@ from rest_framework.response import Response
 from book.models import Book, Author, Genre, BookItem
 from book.paginators import Pagination
 from book.permissions import IsUserModerator, IsUserOwner
-from book.serializers import BookSerializer, AuthorSerializer, GenreSerializer, BookItemSerializer
+from book.serializers import (
+    BookSerializer,
+    AuthorSerializer,
+    GenreSerializer,
+    BookItemSerializer,
+)
 
 
 class BookViewSet(viewsets.ModelViewSet):
@@ -29,7 +33,7 @@ class BookViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         if self.request.user == IsAuthenticatedOrReadOnly:
-            queryset = Book.objects.filter(bookitem__gt=0).distinct('title')
+            queryset = Book.objects.filter(bookitem__gt=0).distinct("title")
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
 
@@ -46,7 +50,7 @@ class BookViewSet(viewsets.ModelViewSet):
     Docker и ReadMe
     OpenAPI
     Возможно переписать на джанге, чтобы была верстка?
-     """
+    """
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -121,4 +125,3 @@ class BookItemViewSet(viewsets.ModelViewSet):
         queryset = BookItem.objects.all()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-

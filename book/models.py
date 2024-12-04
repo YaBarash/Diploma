@@ -9,6 +9,7 @@ class Author(models.Model):
     """
     Модель Автора с поляем полного имени
     """
+
     full_name = models.CharField(
         max_length=50,
         verbose_name="полное имя автора",
@@ -28,6 +29,7 @@ class Genre(models.Model):
     """
     Модель Жанра с полем названия
     """
+
     title = models.CharField(
         max_length=50,
         verbose_name="Название жанра",
@@ -47,6 +49,7 @@ class Book(models.Model):
     """
     Модель Книги с полями названия, описания, жанра, автора и библиотекарем
     """
+
     title = models.CharField(
         max_length=100,
         unique=True,
@@ -97,6 +100,7 @@ class BookItem(models.Model):
     """
     Модель Экземпляра Книги с полями инвентарного номера, книги, держателя и статуса книги
     """
+
     number = models.PositiveIntegerField(
         primary_key=True,
         verbose_name="Инвентарный номер",
@@ -116,16 +120,17 @@ class BookItem(models.Model):
         help_text="Выберите держателя",
         **NULLABLE,
     )
-
     status = models.CharField(
         max_length=20,
-        choices=[('is_exist', 'в наличии'), ('get', 'выдана'), ('lost', 'утеряна')],
-        verbose_name='Статус книги',
-        help_text='Статус книги',
-        default='is_exist')
+        choices=[("is_exist", "в наличии"), ("get", "выдана"), ("lost", "утеряна")],
+        verbose_name="Статус книги",
+        help_text="Статус книги",
+        default="is_exist",
+    )
 
     def __str__(self):
-        return f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, держатель {self.keeper} {self.status}"
+        return (f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, "
+                f"держатель {self.keeper} {self.status}")
 
     class Meta:
         verbose_name = "Экземпляр книги"

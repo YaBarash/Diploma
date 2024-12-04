@@ -11,4 +11,8 @@ class UserAdmin(admin.ModelAdmin):
         "is_superuser",
         "is_active",
     )
-    list_display = ("id", "email", "is_staff",)
+    list_display = (
+        "id",
+        "email",
+        "is_staff",
+    )
