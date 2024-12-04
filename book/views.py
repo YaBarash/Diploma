@@ -18,19 +18,26 @@ class BookViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ["title", "authors__full_name", "genre__title"]
 
+    # Автоматическое присвоение библиотекаря при создании книги
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    # Отображение списка книг, которые находятся в наличии
     def list(self, request, *args, **kwargs):
-        queryset = Book.objects.filter(bookitem__gt=0)
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        if self.request.user == IsAdminUser or IsUserModerator:
+            queryset = Book.objects.all()
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        if self.request.user == IsAuthenticatedOrReadOnly:
+            queryset = Book.objects.filter(bookitem__gt=0).distinct('title')
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
 
     def get_permissions(self):
         if self.action in ["update", "retrieve", "create", "destroy"]:
-            self.permission_classes = (IsUserModerator, IsAdminUser)
+            self.permission_classes = (IsUserModerator | IsAdminUser,)
         elif self.action == "list":
-            self.permission_classes = (IsAuthenticatedOrReadOnly, IsAdminUser)
+            self.permission_classes = (IsAuthenticatedOrReadOnly | IsAdminUser,)
         return super().get_permissions()
 
     """   
@@ -47,6 +54,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     serializer_class = GenreSerializer
     pagination_class = Pagination
 
+    # Метод создания жанра с проверкой на повторение
     def create(self, request, *args, **kwargs):
         lower_title = request.data["title"].lower()
         try:
@@ -63,14 +71,15 @@ class GenreViewSet(viewsets.ModelViewSet):
                 json_dumps_params={"ensure_ascii": False},
             )
 
+    # Автоматическое присвоение библиотекаря при создании книги
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
     def get_permissions(self):
         if self.action in ["update", "retrieve", "create", "destroy"]:
-            self.permission_classes = (IsUserModerator,)
+            self.permission_classes = (IsUserModerator | IsAdminUser,)
         elif self.action == "list":
-            self.permission_classes = (IsAuthenticatedOrReadOnly,)
+            self.permission_classes = (IsAuthenticatedOrReadOnly | IsAdminUser,)
         return super().get_permissions()
 
 
@@ -84,9 +93,9 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["update", "retrieve", "create", "destroy"]:
-            self.permission_classes = (IsUserModerator,)
+            self.permission_classes = (IsUserModerator | IsAdminUser,)
         elif self.action == "list":
-            self.permission_classes = (IsAuthenticatedOrReadOnly,)
+            self.permission_classes = (IsAuthenticatedOrReadOnly | IsAdminUser,)
         return super().get_permissions()
 
 
@@ -97,7 +106,19 @@ class BookItemViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ["update", "retrieve", "create", "destroy"]:
-            self.permission_classes = (IsUserModerator,)
+            self.permission_classes = (IsUserModerator | IsAdminUser,)
         elif self.action == "list":
-            self.permission_classes = (IsUserOwner | IsUserModerator)
+            self.permission_classes = (IsUserOwner | IsUserModerator,)
         return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = BookItem.objects.all()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+

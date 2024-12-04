@@ -6,6 +6,9 @@ NULLABLE = {"blank": True, "null": True}
 
 
 class Author(models.Model):
+    """
+    Модель Автора с поляем полного имени
+    """
     full_name = models.CharField(
         max_length=50,
         verbose_name="полное имя автора",
@@ -22,6 +25,9 @@ class Author(models.Model):
 
 
 class Genre(models.Model):
+    """
+    Модель Жанра с полем названия
+    """
     title = models.CharField(
         max_length=50,
         verbose_name="Название жанра",
@@ -38,6 +44,9 @@ class Genre(models.Model):
 
 
 class Book(models.Model):
+    """
+    Модель Книги с полями названия, описания, жанра, автора и библиотекарем
+    """
     title = models.CharField(
         max_length=100,
         unique=True,
@@ -64,12 +73,12 @@ class Book(models.Model):
         User,
         on_delete=models.SET_NULL,
         null=True,
-        verbose_name="Владелец",
+        verbose_name="библиотекарь",
         help_text="укажите библиотекаря",
     )
 
+    # Метод подсчета экземпляров книг, чтобы обращаться к нему как к свойству при помощи декоратора
     @property
-    # """обращение как к свойству"""
     def count_item(self):
         return self.bookitem_set.count()
 
@@ -85,6 +94,9 @@ class Book(models.Model):
 
 
 class BookItem(models.Model):
+    """
+    Модель Экземпляра Книги с полями инвентарного номера, книги, держателя и статуса книги
+    """
     number = models.PositiveIntegerField(
         primary_key=True,
         verbose_name="Инвентарный номер",
@@ -105,14 +117,15 @@ class BookItem(models.Model):
         **NULLABLE,
     )
 
-    status = models.models.CharField(
+    status = models.CharField(
         max_length=20,
-        choices=[('is_ready', 'в наличии'), ('get', 'выдана'), ('lost', 'утеряна')],
-        verbose_name='Статус доставки',
-        help_text='Статус отправки напоминания')
+        choices=[('is_exist', 'в наличии'), ('get', 'выдана'), ('lost', 'утеряна')],
+        verbose_name='Статус книги',
+        help_text='Статус книги',
+        default='is_exist')
 
     def __str__(self):
-        return f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, держатель {self.keeper}"
+        return f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, держатель {self.keeper} {self.status}"
 
     class Meta:
         verbose_name = "Экземпляр книги"
