@@ -135,3 +135,4 @@ class BookItem(models.Model):
     class Meta:
         verbose_name = "Экземпляр книги"
         verbose_name_plural = "Экземпляры книги"
+
