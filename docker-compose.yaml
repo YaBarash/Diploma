@@ -3,6 +3,7 @@ version: "3.12"
 services:
   db:
     image: postgres:16-alpine
+    container_name: postgres_db
     restart: on-failure
     env_file:
       - .env
@@ -16,9 +17,10 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
+  web:
     build: .
     tty: true
+    container_name: app_django
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/app

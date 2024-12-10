@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets, status
 from rest_framework import filters
@@ -116,10 +117,22 @@ class BookItemViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        books = serializer.validated_data['number']
+        queryset = BookItem.objects.filter(
+            Q(book_details=books) | Q(status="get")
+        ).first()
+        if queryset:
+            if queryset.keeper == self.request.user:
+                return Response("Книга уже у вас")
+            return Response("Нельзя выдать")
+        serializer.status = "get"
+        serializer.keeper = self.request.user
+        serializer.save()
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+    def perform_update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        self.perform_update(serializer)
+        return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = BookItem.objects.all()
