@@ -87,8 +87,8 @@ class Book(models.Model):
 
     def __str__(self):
         return (
-                ",".join(self.authors.values_list("full_name", flat=True))
-                + f": {self.title}"
+            ",".join(self.authors.values_list("full_name", flat=True))
+            + f": {self.title}"
         )
 
     class Meta:
@@ -129,10 +129,11 @@ class BookItem(models.Model):
     )
 
     def __str__(self):
-        return (f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, "
-                f"держатель {self.keeper} {self.status}")
+        return (
+            f"Инвентарный номер: {self.number}, Инфо книги: {self.book_details}, "
+            f"держатель {self.keeper} {self.status}"
+        )
 
     class Meta:
         verbose_name = "Экземпляр книги"
         verbose_name_plural = "Экземпляры книги"
-

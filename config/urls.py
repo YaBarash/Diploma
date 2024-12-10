@@ -9,7 +9,7 @@ schema_view = get_schema_view(
         # название нашей документации
         title="Library API",
         # версия документации
-        default_version='v1',
+        default_version="v1",
         # описание нашей документации
         description="Library API description",
         terms_of_service="https://localhost/policies/terms/",
@@ -25,7 +25,13 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("library/", include("book.urls", namespace="library")),
     path("users/", include("users.urls", namespace="users")),
-    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path(
+        "swagger<format>/", schema_view.without_ui(cache_timeout=0), name="schema-json"
+    ),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]
