@@ -7,7 +7,7 @@ from drf_yasg import openapi
 schema_view = get_schema_view(
     openapi.Info(
         # название нашей документации
-        title="Habits API",
+        title="Library API",
         # версия документации
         default_version='v1',
         # описание нашей документации
