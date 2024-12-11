@@ -20,7 +20,7 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
-    genre = BookSerializer(read_only=True)
+    genre = BookSerializer
 
     class Meta:
         model = Genre
@@ -28,7 +28,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class BookItemSerializer(serializers.ModelSerializer):
-    book_details = BookSerializer(read_only=True)
+    book_details = BookSerializer
 
     class Meta:
         model = BookItem

@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from rest_framework import viewsets, status
 from rest_framework import filters
@@ -43,14 +44,6 @@ class BookViewSet(viewsets.ModelViewSet):
         elif self.action == "list":
             self.permission_classes = (IsAuthenticatedOrReadOnly | IsAdminUser,)
         return super().get_permissions()
-
-    """   
-    Отслеживание статуса книги (когда выдана, кому, когда отдать)
-    Уменьшать счетчик по количеству свободных книг
-    Docker и ReadMe
-    OpenAPI
-    Возможно переписать на джанге, чтобы была верстка?
-    """
 
 
 class GenreViewSet(viewsets.ModelViewSet):
@@ -116,10 +109,23 @@ class BookItemViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        books = serializer.book_details
+        queryset = BookItem.objects.filter(
+            Q(book_details=books) | Q(status="get")
+        ).first()
+        if queryset:
+            if queryset.keeper == self.request.user:
+                return Response("Книга уже у вас")
+            return Response("Нельзя выдать")
+        serializer.status = "get"
+        serializer.keeper = self.request.user
+        serializer.save()
 
-    def perform_update(self, serializer):
-        serializer.save(user=self.request.user)
+    def perform_update(self, request, *args, **kwargs):
+        serializer = BookItemSerializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = BookItem.objects.all()
