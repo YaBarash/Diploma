@@ -45,14 +45,6 @@ class BookViewSet(viewsets.ModelViewSet):
             self.permission_classes = (IsAuthenticatedOrReadOnly | IsAdminUser,)
         return super().get_permissions()
 
-    """   
-    Отслеживание статуса книги (когда выдана, кому, когда отдать)
-    Уменьшать счетчик по количеству свободных книг
-    Docker и ReadMe
-    OpenAPI
-    Возможно переписать на джанге, чтобы была верстка?
-    """
-
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
@@ -117,7 +109,7 @@ class BookItemViewSet(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def perform_create(self, serializer):
-        books = serializer.validated_data['number']
+        books = serializer.book_details
         queryset = BookItem.objects.filter(
             Q(book_details=books) | Q(status="get")
         ).first()
@@ -130,9 +122,10 @@ class BookItemViewSet(viewsets.ModelViewSet):
         serializer.save()
 
     def perform_update(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+        serializer = BookItemSerializer(data=request.data)
+        if serializer.is_valid():
+            self.perform_update(serializer)
+            return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = BookItem.objects.all()
