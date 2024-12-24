@@ -127,6 +127,7 @@ class BookItem(models.Model):
         help_text="Статус книги",
         default="is_exist",
     )
+    qr_code = models.ImageField(upload_to='qr_codes', blank=True)
 
     def __str__(self):
         return (

@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from book.api import GetQRCodeBook
 from book.models import Book, Author, Genre, BookItem
 from book.paginators import Pagination
 from book.permissions import IsUserModerator, IsUserOwner
@@ -120,13 +121,17 @@ class BookItemViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+    # def perform_create(self, request, *args, **kwargs):
+    #     number_book = BookItem.objects.get(number=self.request.data.get("number"))
+    #     qr_book = GetQRCodeBook(number_book)
+    #     qr_book.save(status="create")
+    #     return qr_book
+
 
 class GetBookView(APIView):
     def post(self, *args, **kwargs):
         queryset = BookItem.objects.get(number=self.request.data.get('number'))
         if queryset.keeper:
-            print(queryset.number)
-            print(self.request.data.get("number"))
             if queryset.keeper == self.request.user:
                 return Response("Книга уже у вас", status=status.HTTP_200_OK)
             return Response("Нельзя выдать")
@@ -134,3 +139,33 @@ class GetBookView(APIView):
         queryset.keeper = self.request.user
         queryset.save()
         return Response("Выдано", status=status.HTTP_200_OK)
+
+
+class QRCodeAPIView(APIView):
+    serializer_class = BookItemSerializer
+    def get(self, request, *args, **kwargs):
+        serializer = BookItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            number_book = serializer.validated_data['number']
+            qr_book = GetQRCodeBook()
+            qr_book.get_request_book(number_book)
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # def post(self, request):
+    #     serializer = BookItemSerializer(data=request.data, context={'request': request})
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(
+    #             {
+    #                 'status': True,
+    #                 'message': 'Success',
+    #                 'Data': serializer.data
+    #             },
+    #             status=status.HTTP_201_CREATED)
+    #     else:
+    #         return Response({
+    #             'status': False,
+    #             'message': "Error"
+    #         }, status=status.HTTP_400_BAD_REQUEST)

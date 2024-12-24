@@ -34,4 +34,5 @@ class BookItemAdmin(admin.ModelAdmin):
         "number",
         "book_details",
         "keeper",
+        "qr_code"
     )

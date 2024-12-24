@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from book.apps import BookConfig
-from book.views import BookViewSet, AuthorViewSet, GenreViewSet, BookItemViewSet, GetBookView
+from book.views import BookViewSet, AuthorViewSet, GenreViewSet, BookItemViewSet, GetBookView, QRCodeAPIView
 
 app_name = BookConfig.name
 
@@ -20,4 +20,5 @@ urlpatterns = [
     path("", include(router3.urls)),
     path("", include(router4.urls)),
     path("get_book/", GetBookView.as_view()),
+    path("get_qr_book/", QRCodeAPIView.as_view())
 ]
